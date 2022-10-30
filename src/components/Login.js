@@ -61,11 +61,15 @@ const Login = () => {
     })
       .then(function (res) {
         //handle success
-        return navigate("/main");
+        if ((res.status = 200)) {
+          return navigate("/main", { state: { id: 1, name: "sabaoon" } });
+        } else {
+          setError(" Error user name or password");
+          return;
+        }
       })
       .catch(function (res) {
         //handle error
-        console.dir(res);
         setError(" Error user name or password");
         return;
       });
