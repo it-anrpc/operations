@@ -3,6 +3,7 @@ import Layout from "./Layout";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import MuiAlert from "@mui/material/Alert";
+import AddForm from "./AddForm";
 
 const NOServerData = (props) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -77,14 +78,12 @@ const Main = (props) => {
       <Layout />
       <h1> main page</h1>
       <div>
+        <AddForm />
+      </div>
+      <div>
         <NOServerData Error={error} />
       </div>
-      <MUIDataTable
-        title={"Employee List"}
-        data={dbData}
-        columns={dbColumns}
-        options={options}
-      />
+      <MUIDataTable title={"Employee List"} data={dbData} columns={dbColumns} />
     </div>
   );
 };
