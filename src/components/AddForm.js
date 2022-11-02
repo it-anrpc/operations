@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -10,15 +10,17 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
 import axios from "axios";
+import VirtualizedAutoComplete from "../VirtualizedAutoComplete";
 
 export default function FormDialog() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   //form value
-  const [groupID, setGroupID] = React.useState("");
-  const [area, setArea] = React.useState("");
-  const [unit, setUnit] = React.useState("");
-  const [timeOpened, setTimeOpened] = React.useState("");
-  const [timeClosed, setTimeClosed] = React.useState("");
+  const [groupID, setGroupID] = useState("");
+  const [area, setArea] = useState("");
+  const [unit, setUnit] = useState("");
+  const [timeOpened, setTimeOpened] = useState("");
+  const [timeClosed, setTimeClosed] = useState("");
+  const [unitTags, setUnitTags] = useState([]);
 
   const handleOnChange = (value, stateSetter) => {
     stateSetter(value);
@@ -64,6 +66,33 @@ export default function FormDialog() {
     setOpen(false);
   };
 
+  useEffect(() => {
+    unitsData();
+  }, []);
+  const unitsData = () => {
+    axios({
+      method: "get",
+      url: "api/units",
+      config: { headers: { "Content-Type": "multipart/form-data" } },
+    })
+      .then(function (res) {
+        //handle success
+        if ((res.status = 200)) {
+          if (res.data.result.length > 0) {
+            console.log(res.data);
+            setUnitTags(res.data.result);
+          }
+        } else {
+          // setError(" Error user name or password");
+        }
+      })
+      .catch(function (res) {
+        //handle error
+        // setError(" Error user name or password");
+        return;
+      });
+  };
+
   const groupsID = [
     { label: "Group-1", ID: 1 },
     { label: "Group-2", ID: 2 },
@@ -82,9 +111,9 @@ export default function FormDialog() {
     { label: "1XX", ID: "1XX" },
   ];
 
-  const equibments = [
-    { label: "tt-51", ID: "tt-51" },
-    { label: "tt-60", ID: "tt-60" },
+  const executedEdara = [
+    { label: "تحكم", ID: "850" },
+    { label: "كهربا", ID: "800" },
     { label: "xv-90", ID: "xv-90" },
     { label: "lt-18", ID: "lt-18" },
     { label: "pt-50", ID: "pt-50" },
@@ -166,6 +195,15 @@ export default function FormDialog() {
                     <TextField {...params} label="UNIT" />
                   )}
                 />
+
+                <VirtualizedAutoComplete
+                  options={unitTags}
+                  getOptionLabel={(option) => option.TAG ?? option}
+                  renderInput={(params) => (
+                    <TextField {...params} label="15,000 Tag" />
+                  )}
+                />
+
                 {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateTimePicker
                     label="Date&Time picker"
@@ -209,10 +247,10 @@ export default function FormDialog() {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={equibments}
+                  options={executedEdara}
                   sx={{ width: 250 }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Equibment" />
+                    <TextField {...params} label="Executed Edara" />
                   )}
                 />
                 <TextField id="description" label="description" type="search" />

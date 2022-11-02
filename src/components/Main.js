@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "./Layout";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import MuiAlert from "@mui/material/Alert";
 import AddForm from "./AddForm";
+import { TextField } from "@mui/material";
 
 const NOServerData = (props) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -23,9 +24,9 @@ const NOServerData = (props) => {
 };
 
 const Main = (props) => {
-  const [error, setError] = React.useState("");
-  const [dbData, setdbData] = React.useState([]);
-  const [dbColumns, setdbdbColumns] = React.useState([]);
+  const [error, setError] = useState("");
+  const [dbData, setdbData] = useState([]);
+  const [dbColumns, setdbdbColumns] = useState([]);
 
   useEffect(() => {
     getTableData();
@@ -73,6 +74,7 @@ const Main = (props) => {
   const options = {
     filterType: "checkbox",
   };
+
   return (
     <div>
       <Layout />
