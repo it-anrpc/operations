@@ -137,6 +137,7 @@ export default function VirtualizedAutoComplete(props) {
       getOptionLabel={props.getOptionLabel}
       //groupBy={(option) => option.ID}
       renderInput={props.renderInput}
+      defaultValue={{ TAG: props.defaultValue }}
       renderOption={(props, option) => [props, option]}
       // TODO: Post React 18 update - validate this conversion, look like a hidden bug
       renderGroup={(params) => params}

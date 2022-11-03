@@ -5,7 +5,9 @@ import axios from "axios";
 import MuiAlert from "@mui/material/Alert";
 import AddForm from "./AddForm";
 import { TextField } from "@mui/material";
-
+import { CompressOutlined } from "@mui/icons-material";
+import ShowForm from "./ShowForm";
+import EditForm from "./EditForm";
 const NOServerData = (props) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -27,7 +29,6 @@ const Main = (props) => {
   const [error, setError] = useState("");
   const [dbData, setdbData] = useState([]);
   const [dbColumns, setdbColumns] = useState([]);
-
   useEffect(() => {
     getTableData();
   }, []);
@@ -41,13 +42,21 @@ const Main = (props) => {
       .then(function (res) {
         //handle success
         if ((res.status = 200)) {
-          if (res.data.result.length > 0) {
-            const data = res.data.result.map((item) => {
-              return Object.values(item);
+          if (res.data.result.columnsData.length > 0) {
+            var columnsDbTitle = res.data.result.showedColumns.map((title) => {
+              return {
+                name: title.key,
+                label: title.en,
+                options: {
+                  filter: true,
+                  sort: true,
+                },
+              };
             });
-            setdbData(res.data.result);
-            let merged = Object.keys(res.data.result[0]).concat(columns);
-            setdbColumns(merged);
+
+            var columnKeys = columnsDbTitle.concat(columnActions);
+            setdbData(res.data.result.columnsData);
+            setdbColumns(columnKeys);
           }
         } else {
           setError(" Error user name or password");
@@ -60,78 +69,40 @@ const Main = (props) => {
       });
   };
 
-  /*   const columns = [
-    "shift ID",
-    "unit",
-    "TIME_OPEN",
-    "TIME_CLOSED",
-    "OPENED_BY",
-    "CLOSED_BY",
-    "EQUIBMENT",
-    "DESCREPTION",
-    "STATUS",
-  ]; */
+  const getDataByIndex = (index) => {
+    console.log(dbData[index]);
+    return dbData[index];
+  };
 
-  /*   const options = {
-    filterType: "checkbox",
-  }; */
-
-  const columns = [
-    /*    {
-      name: "Name",
-      options: {
-        filter: true,
-      },
-    },
+  const columnActions = [
     {
-      label: "Modified Title Label",
-      name: "Title",
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: "Location",
-      options: {
-        filter: false,
-      },
-    },
-    {
-      name: "Age",
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: "Salary",
-      options: {
-        filter: true,
-        sort: false,
-      },
-    }, */
-    {
-      name: "Add",
+      name: "Show",
       options: {
         filter: false,
         sort: false,
         empty: true,
-        customBodyRenderLite: (dataIndex) => {
+        customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            <button
-              onClick={() => {
-                const { data } = this.state;
-                data.unshift([
-                  "Mason Ray",
-                  "Computer Scientist",
-                  "San Francisco",
-                  39,
-                  "$142,000",
-                ]);
-                this.setState({ data });
-              }}
-            >
-              Add
-            </button>
+            <ShowForm
+              rowData={tableMeta.tableData[tableMeta.rowIndex]}
+              rowindex={tableMeta.rowIndex}
+            />
+          );
+        },
+      },
+    },
+    {
+      name: "Edit",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <EditForm
+              rowData={tableMeta.tableData[tableMeta.rowIndex]}
+              rowindex={tableMeta.rowIndex}
+            />
           );
         },
       },
@@ -152,27 +123,6 @@ const Main = (props) => {
               }}
             >
               Delete
-            </button>
-          );
-        },
-      },
-    },
-    {
-      name: "Edit",
-      options: {
-        filter: false,
-        sort: false,
-        empty: true,
-        customBodyRenderLite: (dataIndex, rowIndex) => {
-          return (
-            <button
-              onClick={() =>
-                window.alert(
-                  `Clicked "Edit" for row ${rowIndex} with dataIndex of ${dataIndex}`
-                )
-              }
-            >
-              Edit
             </button>
           );
         },

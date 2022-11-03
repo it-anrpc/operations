@@ -130,15 +130,3 @@ const Login = () => {
 };
 
 export default Login;
-
-/*import React from "react";
-
-function login() {
-  return (
-    <div className="row">
-      <h1>welcome ffff</h1>
-    </div>
-  );
-}
-
-export default login;*/
