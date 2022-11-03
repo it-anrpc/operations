@@ -27,6 +27,7 @@ export default function App() {
 
   return (
     <div className="App">
+      <h1>ANRPC </h1>
       <Layout />
       <h1>{message}</h1>
       <Login />
