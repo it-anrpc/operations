@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -9,73 +9,46 @@ import DialogTitle from "@mui/material/DialogTitle";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
 import axios from "axios";
-import VirtualizedAutoComplete from "../VirtualizedAutoComplete";
 
-export default function FormDialog(props) {
-  const [open, setOpen] = useState(false);
-
+export default function FormDialog() {
+  const [open, setOpen] = React.useState(false);
   //form value
-  const [groupID, setGroupID] = useState("");
-  const [area, setArea] = useState("");
-  const [unit, setUnit] = useState("");
-  const [timeOpened, setTimeOpened] = useState(
-    new Date().toJSON().slice(0, 16)
-  );
-  const [timeClosed, setTimeClosed] = useState(
-    new Date().toJSON().slice(0, 16)
-  );
-  const [openedBy, setOpenedBy] = useState("");
-  const [closedBy, setClosedBy] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("");
-  const [tag, setTag] = useState("");
-  const [exeEdara, setExeEdara] = useState("");
-  const [unitTags, setUnitTags] = useState([]);
-
-  const [dropDownData, setdropDownData] = useState({});
+  const [groupID, setGroupID] = React.useState("");
+  const [area, setArea] = React.useState("");
+  const [unit, setUnit] = React.useState("");
+  const [timeOpened, setTimeOpened] = React.useState("");
+  const [timeClosed, setTimeClosed] = React.useState("");
 
   const handleOnChange = (value, stateSetter) => {
     stateSetter(value);
   };
 
   const handleSubmit = () => {
-    var dbOjectAdd = {
-      groupID: groupID,
-      area: area,
-      unit: unit,
-      openedBy: openedBy,
-      closedBy: closedBy,
-      description: description,
-      status: status,
-      tag: tag,
-      exeEdara: exeEdara,
-      timeOpened: timeOpened,
-      timeClosed: timeClosed,
-    };
-
     axios({
       method: "post",
       url: "/api/shiftLog",
-      data: dbOjectAdd,
+      data: {
+        groupID: groupID,
+        area: area,
+        unit: unit,
+        timeOpened: timeOpened,
+        timeClosed: timeClosed,
+      },
       config: { headers: { "Content-Type": "multipart/form-data" } },
     })
       .then(function (res) {
         //handle success
         if ((res.status = 200)) {
-          props.callBackNewRow(dbOjectAdd);
-          setOpen(false);
+          console.log("success" + res);
         } else {
           // setError(" Error user name or password");
-          alert("error");
           return;
         }
       })
       .catch(function (res) {
         //handle error
         //setError(" Error user name or password");
-        alert("error");
         return;
       });
   };
@@ -88,53 +61,37 @@ export default function FormDialog(props) {
     setOpen(false);
   };
 
-  useEffect(() => {
-    masterData();
-    equibmentsData();
-  }, []);
-  const equibmentsData = () => {
-    axios({
-      method: "get",
-      url: "api/equibments",
-      config: { headers: { "Content-Type": "multipart/form-data" } },
-    })
-      .then(function (res) {
-        //handle success
-        if ((res.status = 200)) {
-          if (res.data.result.length > 0) {
-            setUnitTags(res.data.result);
-          }
-        } else {
-          // setError(" Error user name or password");
-        }
-      })
-      .catch(function (res) {
-        //handle error
-        // setError(" Error user name or password");
-        return;
-      });
-  };
+  const groupsID = [
+    { label: "Group-1", ID: 1 },
+    { label: "Group-2", ID: 2 },
+    { label: "Group-3", ID: 3 },
+    { label: "Group-4", ID: 4 },
+  ];
 
-  const masterData = () => {
-    axios({
-      method: "get",
-      url: "api/addShift/masterData",
-      config: { headers: { "Content-Type": "multipart/form-data" } },
-    })
-      .then(function (res) {
-        //handle success
-        if ((res.status = 200)) {
-          setdropDownData(res.data.result);
-        } else {
-          // setError(" Error user name or password");
-        }
-      })
-      .catch(function (res) {
-        //handle error
-        // setError(" Error user name or password");
-        return;
-      });
-  };
+  const units = [
+    { label: "331", ID: 331 },
+    { label: "200", ID: 200 },
+    { label: "201", ID: 201 },
+    { label: "412", ID: 412 },
+    { label: "300", ID: 300 },
+    { label: "500", ID: 500 },
+    { label: "400", ID: 400 },
+    { label: "1XX", ID: "1XX" },
+  ];
+
+  const equibments = [
+    { label: "tt-51", ID: "tt-51" },
+    { label: "tt-60", ID: "tt-60" },
+    { label: "xv-90", ID: "xv-90" },
+    { label: "lt-18", ID: "lt-18" },
+    { label: "pt-50", ID: "pt-50" },
+    { label: "tt-30", ID: "tt-30" },
+  ];
+
+  const operators = [
+    { label: "ahmed", ID: "ahmed" },
+    { label: "ali", ID: "ali" },
+  ];
 
   return (
     <div className="container">
@@ -150,10 +107,11 @@ export default function FormDialog(props) {
         </div>
 
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>ADD NEW SHIFT LOG</DialogTitle>
+          <DialogTitle>Subscribe</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              kindly add new work orders today.
+              To subscribe to this website, please enter your email address
+              here. We will send updates occasionally.
             </DialogContentText>
             <Box
               component="form"
@@ -167,75 +125,55 @@ export default function FormDialog(props) {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={
-                    dropDownData.hasOwnProperty("shiftGroups")
-                      ? dropDownData.shiftGroups.recordset
-                      : []
-                  }
+                  options={groupsID}
                   sx={{ width: 250 }}
-                  getOptionLabel={(option) => option.TXT_SHIFT}
+                  // getOptionLabel={(option) => option.label}
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
                   }
                   onChange={(_, object) => {
-                    handleOnChange(object.CODE_SHIFT, setGroupID);
+                    handleOnChange(object.ID, setGroupID);
                   }}
                   renderInput={(params) => (
                     <TextField {...params} label="Group-ID" />
                   )}
                 />
-                <Autocomplete
-                  disablePortal
+                <TextField
                   id="area"
-                  options={
-                    dropDownData.hasOwnProperty("areas")
-                      ? dropDownData.areas.recordset
-                      : []
-                  }
-                  sx={{ width: 250 }}
-                  getOptionLabel={(option) => option.TXT_AREA}
-                  /*  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  } */
-                  onChange={(_, object) => {
-                    if (object) handleOnChange(object.CODE_AREA, setArea);
+                  label="Area"
+                  type="search"
+                  value={area}
+                  onChange={(e) => {
+                    handleOnChange(e.target.value, setArea);
                   }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Area" />
-                  )}
+                  helperText="Some important text"
                 />
-
                 <Autocomplete
                   disablePortal
                   id="units"
-                  options={
-                    dropDownData.hasOwnProperty("units")
-                      ? dropDownData.units.recordset
-                      : []
-                  }
+                  options={units}
                   sx={{ width: 250 }}
-                  /*                   isOptionEqualToValue={(option, value) =>
+                  isOptionEqualToValue={(option, value) =>
                     option.id === value.id
-                  } */
-                  getOptionLabel={(option) => option.TXT_UNIT}
+                  }
                   onChange={(_, object) => {
-                    if (object) handleOnChange(object.CODE_UNIT, setUnit);
+                    handleOnChange(object.ID, setUnit);
                   }}
                   renderInput={(params) => (
                     <TextField {...params} label="UNIT" />
                   )}
                 />
-
-                <VirtualizedAutoComplete
-                  options={unitTags}
-                  getOptionLabel={(option) => option.TAG ?? option}
-                  renderInput={(params) => (
-                    <TextField {...params} label="15,000 Tag" />
-                  )}
-                  onChange={(_, object) => {
-                    if (object) handleOnChange(object.TAG, setTag);
-                  }}
-                />
+                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    label="Date&Time picker"
+                    value={value}
+                    inputFormat="d/MM/YYYY hh:mm:a"
+                    disableFuture={true}
+                    disableOpenPicker={true}
+                    onChange={handleChange}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider> */}
 
                 <TextField
                   id="timeOpened"
@@ -250,6 +188,7 @@ export default function FormDialog(props) {
                     shrink: true,
                   }}
                 />
+
                 <TextField
                   id="timeClosed"
                   label="time closed"
@@ -263,102 +202,25 @@ export default function FormDialog(props) {
                     shrink: true,
                   }}
                 />
-                <Autocomplete
-                  disablePortal
-                  id="openedBy"
-                  options={
-                    dropDownData.hasOwnProperty("users")
-                      ? dropDownData.users.recordset
-                      : []
-                  }
-                  sx={{ width: 250 }}
-                  /*                   isOptionEqualToValue={(option, value) => {
-                    return option.ID === value.ID;
-                  }} */
-                  getOptionLabel={(option) => option.USER_NAME}
-                  onChange={(_, object) => {
-                    if (object) handleOnChange(object.EMPN, setOpenedBy);
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Opended By" />
-                  )}
-                />
-                <Autocomplete
-                  disablePortal
-                  id="closedBy"
-                  options={
-                    dropDownData.hasOwnProperty("users")
-                      ? dropDownData.users.recordset
-                      : []
-                  }
-                  getOptionLabel={(option) => option.USER_NAME}
-                  sx={{ width: 250 }}
-                  /*                   isOptionEqualToValue={(option, value) =>
-                    option.ID === value.ID
-                  } */
-                  onChange={(_, object) => {
-                    if (object) handleOnChange(object.EMPN, setClosedBy);
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Closed By" />
-                  )}
-                />
+                <TextField id="opendBy" label="opend By" type="search" />
+                <TextField id="closedBy" label="closed By" type="search" />
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={
-                    dropDownData.hasOwnProperty("exeEdara")
-                      ? dropDownData.exeEdara.recordset
-                      : []
-                  }
+                  options={equibments}
                   sx={{ width: 250 }}
-                  getOptionLabel={(option) => option.TXT_EDARA}
                   renderInput={(params) => (
-                    <TextField {...params} label="Executed Edara" />
-                  )}
-                  onChange={(_, object) => {
-                    if (object) handleOnChange(object.CODE_EDARA, setExeEdara);
-                  }}
-                />
-
-                <TextareaAutosize
-                  type="search"
-                  maxRows={9}
-                  label="description"
-                  aria-label="maximum height"
-                  placeholder="Maximum 4 rows"
-                  defaultValue="Description"
-                  onChange={(e) => {
-                    handleOnChange(e.target.value, setDescription);
-                  }}
-                />
-
-                <Autocomplete
-                  disablePortal
-                  id="status"
-                  options={
-                    dropDownData.hasOwnProperty("status")
-                      ? dropDownData.status.recordset
-                      : []
-                  }
-                  sx={{ width: 250 }}
-                  /*                   isOptionEqualToValue={(option, value) => {
-                    return option.ID === value.ID;
-                  }} */
-                  getOptionLabel={(option) => option.TXT_STATUS}
-                  onChange={(_, object) => {
-                    if (object) handleOnChange(object.CODE_STATUS, setStatus);
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Status" />
+                    <TextField {...params} label="Equibment" />
                   )}
                 />
+                <TextField id="description" label="description" type="search" />
+                <TextField id="status" label="status" type="search" />
               </div>
             </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSubmit}>New Log</Button>
+            <Button onClick={handleSubmit}>Subscribe</Button>
           </DialogActions>
         </Dialog>
       </div>

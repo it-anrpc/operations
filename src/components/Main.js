@@ -6,8 +6,7 @@ import MuiAlert from "@mui/material/Alert";
 import AddForm from "./AddForm";
 import { TextField } from "@mui/material";
 import { CompressOutlined } from "@mui/icons-material";
-import ShowForm from "./ShowForm";
-import EditForm from "./EditForm";
+
 const NOServerData = (props) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -46,7 +45,7 @@ const Main = (props) => {
             var columnsDbTitle = res.data.result.showedColumns.map((title) => {
               return {
                 name: title.key,
-                label: title.en,
+                label: title.ar,
                 options: {
                   filter: true,
                   sort: true,
@@ -69,11 +68,6 @@ const Main = (props) => {
       });
   };
 
-  const getDataByIndex = (index) => {
-    console.log(dbData[index]);
-    return dbData[index];
-  };
-
   const columnActions = [
     {
       name: "Show",
@@ -81,28 +75,17 @@ const Main = (props) => {
         filter: false,
         sort: false,
         empty: true,
-        customBodyRender: (value, tableMeta, updateValue) => {
+        customBodyRenderLite: (dataIndex, rowIndex) => {
           return (
-            <ShowForm
-              rowData={tableMeta.tableData[tableMeta.rowIndex]}
-              rowindex={tableMeta.rowIndex}
-            />
-          );
-        },
-      },
-    },
-    {
-      name: "Edit",
-      options: {
-        filter: false,
-        sort: false,
-        empty: true,
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return (
-            <EditForm
-              rowData={tableMeta.tableData[tableMeta.rowIndex]}
-              rowindex={tableMeta.rowIndex}
-            />
+            <button
+              onClick={() =>
+                window.alert(
+                  `Clicked "Edit" for row ${rowIndex} with dataIndex of ${dataIndex}`
+                )
+              }
+            >
+              Show
+            </button>
           );
         },
       },
@@ -123,6 +106,27 @@ const Main = (props) => {
               }}
             >
               Delete
+            </button>
+          );
+        },
+      },
+    },
+    {
+      name: "Edit",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRenderLite: (dataIndex, rowIndex) => {
+          return (
+            <button
+              onClick={() =>
+                window.alert(
+                  `Clicked "Edit" for row ${rowIndex} with dataIndex of ${dataIndex}`
+                )
+              }
+            >
+              Edit
             </button>
           );
         },

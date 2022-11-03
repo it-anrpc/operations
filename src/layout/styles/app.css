@@ -1,0 +1,40 @@
+.container-style {
+    height: 100vh;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+
+    overflow: hidden;
+}
+
+.container-row {
+    background-color: white !important;
+    height: 100%;
+    margin-top: 10px !important;
+    margin-right: 10px !important;
+    margin-left: 10px !important;
+    margin-bottom: 10px !important;
+    border-radius: 20px;
+    -webkit-box-shadow: -4px 4px 40px 11px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: -4px 4px 40px 11px rgba(0, 0, 0, 0.22);
+    box-shadow: -4px 4px 40px 11px rgba(0, 0, 0, 0.22);
+}
+
+.sidebar-style {
+    width: 230px !important;
+    padding-left: 30px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    height: 100%;
+    display: grid !important;
+}
+
+.page-wrapper-container {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 60px;
+    padding-bottom: 0px;
+
+    display: table !important;
+    width: 100%;
+    table-layout: fixed !important;
+}
