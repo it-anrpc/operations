@@ -140,6 +140,7 @@ export default function VirtualizedAutoComplete(props) {
       renderOption={(props, option) => [props, option]}
       // TODO: Post React 18 update - validate this conversion, look like a hidden bug
       renderGroup={(params) => params}
+      onChange={props.onChange}
     />
   );
 }

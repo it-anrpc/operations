@@ -26,7 +26,7 @@ const NOServerData = (props) => {
 const Main = (props) => {
   const [error, setError] = useState("");
   const [dbData, setdbData] = useState([]);
-  const [dbColumns, setdbdbColumns] = useState([]);
+  const [dbColumns, setdbColumns] = useState([]);
 
   useEffect(() => {
     getTableData();
@@ -45,8 +45,9 @@ const Main = (props) => {
             const data = res.data.result.map((item) => {
               return Object.values(item);
             });
-            setdbData(data);
-            setdbdbColumns(Object.keys(res.data.result[0]));
+            setdbData(res.data.result);
+            let merged = Object.keys(res.data.result[0]).concat(columns);
+            setdbColumns(merged);
           }
         } else {
           setError(" Error user name or password");
@@ -59,7 +60,7 @@ const Main = (props) => {
       });
   };
 
-  const columns = [
+  /*   const columns = [
     "shift ID",
     "unit",
     "TIME_OPEN",
@@ -69,18 +70,136 @@ const Main = (props) => {
     "EQUIBMENT",
     "DESCREPTION",
     "STATUS",
+  ]; */
+
+  /*   const options = {
+    filterType: "checkbox",
+  }; */
+
+  const columns = [
+    /*    {
+      name: "Name",
+      options: {
+        filter: true,
+      },
+    },
+    {
+      label: "Modified Title Label",
+      name: "Title",
+      options: {
+        filter: true,
+      },
+    },
+    {
+      name: "Location",
+      options: {
+        filter: false,
+      },
+    },
+    {
+      name: "Age",
+      options: {
+        filter: true,
+      },
+    },
+    {
+      name: "Salary",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    }, */
+    {
+      name: "Add",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRenderLite: (dataIndex) => {
+          return (
+            <button
+              onClick={() => {
+                const { data } = this.state;
+                data.unshift([
+                  "Mason Ray",
+                  "Computer Scientist",
+                  "San Francisco",
+                  39,
+                  "$142,000",
+                ]);
+                this.setState({ data });
+              }}
+            >
+              Add
+            </button>
+          );
+        },
+      },
+    },
+    {
+      name: "Delete",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRenderLite: (dataIndex) => {
+          return (
+            <button
+              onClick={() => {
+                const { data } = this.state;
+                data.shift();
+                this.setState({ data });
+              }}
+            >
+              Delete
+            </button>
+          );
+        },
+      },
+    },
+    {
+      name: "Edit",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRenderLite: (dataIndex, rowIndex) => {
+          return (
+            <button
+              onClick={() =>
+                window.alert(
+                  `Clicked "Edit" for row ${rowIndex} with dataIndex of ${dataIndex}`
+                )
+              }
+            >
+              Edit
+            </button>
+          );
+        },
+      },
+    },
   ];
 
   const options = {
-    filterType: "checkbox",
+    filter: true,
+    filterType: "dropdown",
+    responsive: "vertical",
+    onColumnSortChange: (changedColumn, direction) =>
+      console.log("changedColumn: ", changedColumn, "direction: ", direction),
+    onChangeRowsPerPage: (numberOfRows) =>
+      console.log("numberOfRows: ", numberOfRows),
+    onChangePage: (currentPage) => console.log("currentPage: ", currentPage),
   };
-
   return (
     <div>
       <Layout />
       <h1> main page</h1>
       <div>
-        <AddForm />
+        <AddForm
+          callBackNewRow={(newObject) => {
+            getTableData();
+          }}
+        />
       </div>
       <div>
         <NOServerData Error={error} />
